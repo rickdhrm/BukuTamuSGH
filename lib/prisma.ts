@@ -1,24 +1,22 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
-// Safe wrapper for PrismaClient when DB isn't connected or configured
-let prismaClientInstance: PrismaClient | null = null;
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
-export function getPrisma(): PrismaClient | null {
-  if (prismaClientInstance) return prismaClientInstance;
-  try {
-    prismaClientInstance = new PrismaClient();
-    return prismaClientInstance;
-  } catch (err) {
-    return null;
-  }
+function createPrismaClient(): PrismaClient {
+  const connectionString =
+    process.env.DATABASE_URL ||
+    "postgresql://postgres:postgres@localhost:5432/bukutamu?schema=public";
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaPg(pool);
+  return new PrismaClient({ adapter });
 }
 
-export const prisma = new Proxy({} as PrismaClient, {
-  get(_target, prop) {
-    const client = getPrisma();
-    if (!client) {
-      throw new Error("Prisma client not initialized (database not connected).");
-    }
-    return (client as any)[prop];
-  },
-});
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}

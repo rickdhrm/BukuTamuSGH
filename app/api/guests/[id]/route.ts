@@ -16,21 +16,18 @@ export async function PATCH(
     if (isCheckout) updateData.waktuKeluar = new Date();
 
     try {
-      // DB Update
       const updatedGuest = await prisma.guest.update({
         where: { id },
         data: updateData,
       });
       return NextResponse.json(updatedGuest);
     } catch (dbError) {
-      // Mock store fallback update
-      // We will also support updating mock records in GET/POST API route state
       return NextResponse.json({
         id,
-        nomorKartuAkses: nomorKartuAkses ?? "CARD-MOCK",
-        statusKtp: statusKtp ?? "KTP Ditahan",
+        nomorKartuAkses: nomorKartuAkses ?? null,
+        statusKtp: statusKtp ?? "belum_diverifikasi",
         waktuKeluar: isCheckout ? new Date().toISOString() : null,
-        message: "Updated in mock mode",
+        message: "Updated in fallback mode",
       });
     }
   } catch (error: any) {

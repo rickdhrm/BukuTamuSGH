@@ -20,7 +20,6 @@ export interface GuestMockRecord {
   createdAt: string;
 }
 
-// Global in-memory mock store for demo/development when DB is offline
 export const mockGuestsStore: GuestMockRecord[] = [
   {
     id: "mock-1",
@@ -57,24 +56,6 @@ export const mockGuestsStore: GuestMockRecord[] = [
     waktuMasuk: new Date(Date.now() - 3600000 * 4).toISOString(),
     waktuKeluar: new Date(Date.now() - 3600000 * 1).toISOString(),
     createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-  },
-  {
-    id: "mock-3",
-    namaLengkap: "Deni Kurniawan",
-    nomorTelepon: "081812345678",
-    asalPerusahaan: "PT Sevima Tech",
-    alamatPerusahaan: "Jl. MH Thamrin No. 8, Jakarta",
-    tujuanBerkunjung: "Maintenance",
-    perusahaanTujuan: "SGH Building Ops",
-    departemenTujuan: "Engineering",
-    namaOrangDituju: "Bapak Eko",
-    keperluan: "Pemeriksaan rutin panel listrik lantai 5",
-    selfiePath: "",
-    nomorKartuAkses: "CARD-005",
-    statusKtp: "ditahan",
-    waktuMasuk: new Date(Date.now() - 3600000 * 1).toISOString(),
-    waktuKeluar: null,
-    createdAt: new Date(Date.now() - 3600000 * 1).toISOString(),
   },
 ];
 
@@ -164,6 +145,7 @@ export async function POST(request: Request) {
       });
       return NextResponse.json(newGuest, { status: 201 });
     } catch (dbError) {
+      console.error("DB Create Error:", dbError);
       const mockRecord: GuestMockRecord = {
         id: `mock-${Date.now()}`,
         namaLengkap,
@@ -198,6 +180,23 @@ export async function PATCH(request: Request) {
   try {
     const body = await request.json();
     const { id, nomorKartuAkses, statusKtp, isCheckout } = body;
+
+    const updateData: any = {};
+    if (nomorKartuAkses !== undefined) updateData.nomorKartuAkses = nomorKartuAkses;
+    if (statusKtp !== undefined) updateData.statusKtp = statusKtp;
+    if (isCheckout) updateData.waktuKeluar = new Date();
+
+    try {
+      if (!id.startsWith("mock-")) {
+        const updated = await prisma.guest.update({
+          where: { id },
+          data: updateData,
+        });
+        return NextResponse.json(updated);
+      }
+    } catch (dbErr) {
+      // Fallback
+    }
 
     const idx = mockGuestsStore.findIndex((g) => g.id === id);
     if (idx !== -1) {
