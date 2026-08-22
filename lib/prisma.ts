@@ -1,12 +1,11 @@
-import { PrismaClient } from "@/app/generated/prisma";
+import { PrismaClient } from "@prisma/client";
 
-// Safe wrapper for PrismaClient in Prisma 7 when DB adapter isn't configured
+// Safe wrapper for PrismaClient when DB isn't connected or configured
 let prismaClientInstance: PrismaClient | null = null;
 
 export function getPrisma(): PrismaClient | null {
   if (prismaClientInstance) return prismaClientInstance;
   try {
-    // Attempt standard instantiation if adapter/driver configured
     prismaClientInstance = new PrismaClient();
     return prismaClientInstance;
   } catch (err) {
