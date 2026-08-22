@@ -11,8 +11,20 @@ export async function GET(
     const filePathArray = resolvedParams.path || [];
     const relativePath = filePathArray.join("/");
 
-    const nasBasePath = process.env.NAS_MOUNT_PATH || "./uploads";
-    const absolutePath = path.resolve(nasBasePath, relativePath);
+    // If request path is a base64 string or data URL
+    if (relativePath.startsWith("data:") || relativePath.length > 500) {
+      return NextResponse.redirect(relativePath);
+    }
+
+    if (process.env.VERCEL || process.env.NEXT_PUBLIC_VERCEL_ENV) {
+      return NextResponse.json(
+        { message: "Foto selfie tidak tersedia di lingkungan serverless Vercel." },
+        { status: 404 }
+      );
+    }
+
+    const uploadsDir = path.join(process.cwd(), "uploads");
+    const absolutePath = path.join(uploadsDir, relativePath);
 
     if (!fs.existsSync(absolutePath)) {
       return NextResponse.json(

@@ -34,7 +34,11 @@ export const GuestDetailModal: React.FC<GuestDetailModalProps> = ({
   if (!isOpen || !guest) return null;
 
   const isInBuilding = !guest.waktuKeluar;
-  const selfieUrl = guest.selfiePath ? `/api/images/${guest.selfiePath}` : null;
+  const selfieUrl = guest.selfiePath
+    ? guest.selfiePath.startsWith("data:")
+      ? guest.selfiePath
+      : `/api/images/${guest.selfiePath}`
+    : null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
@@ -66,7 +70,7 @@ export const GuestDetailModal: React.FC<GuestDetailModalProps> = ({
           </button>
         </div>
 
-        {/* Content Body: Grid layout (Selfie on Left/Top, Details on Right) */}
+        {/* Content Body: Grid layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Selfie Photo */}
           <div className="md:col-span-1 flex flex-col items-center space-y-2">
