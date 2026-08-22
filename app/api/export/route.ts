@@ -4,7 +4,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { prisma } from "@/lib/prisma";
 import { mockGuestsStore } from "@/app/api/guests/route";
-import { formatDateTime, formatTime } from "@/lib/utils";
+import { formatDateShort, formatTime, formatDateTime } from "@/lib/utils";
 
 export async function GET(request: Request) {
   try {
@@ -45,37 +45,39 @@ export async function GET(request: Request) {
       guestRecords = filtered;
     }
 
-    // 2. Format tabular data (strictly excluding selfie images)
-    const exportRows = guestRecords.map((g, index) => ({
-      No: index + 1,
-      "Waktu Check-In": formatDateTime(g.waktuMasuk),
-      "Waktu Check-Out": g.waktuKeluar ? formatTime(g.waktuKeluar) : "Belum Check-Out",
-      "Nama Lengkap": g.namaLengkap,
-      "No. Telepon": g.nomorTelepon,
-      "Asal Perusahaan": g.asalPerusahaan,
-      "Alamat Perusahaan": g.alamatPerusahaan,
-      "Tujuan Berkunjung": g.tujuanBerkunjung,
-      "Perusahaan Tujuan": g.perusahaanTujuan,
-      "Departemen": g.departemenTujuan,
-      "Orang Dituju": g.namaOrangDituju,
-      Keperluan: g.keperluan,
-      "No. Kartu Akses": g.nomorKartuAkses || "-",
-      "Status KTP": g.statusKtp || "Belum Diverifikasi",
-    }));
-
     const dateTag = dateStr || new Date().toISOString().split("T")[0];
 
     // ===================================
     // EXCEL EXPORT (.xlsx)
     // ===================================
     if (format === "xlsx" || format === "excel") {
-      const worksheet = XLSX.utils.json_to_sheet(exportRows);
+      // Format tabular data with separated Date and Time columns (Asia/Jakarta UTC+7)
+      const excelRows = guestRecords.map((g, index) => ({
+        No: index + 1,
+        "Tanggal Masuk": g.waktuMasuk ? formatDateShort(g.waktuMasuk) : "-",
+        "Jam Masuk": g.waktuMasuk ? `${formatTime(g.waktuMasuk)} WIB` : "-",
+        "Tanggal Keluar": g.waktuKeluar ? formatDateShort(g.waktuKeluar) : "Belum Out",
+        "Jam Keluar": g.waktuKeluar ? `${formatTime(g.waktuKeluar)} WIB` : "Belum Out",
+        "Nama Lengkap": g.namaLengkap,
+        "No. Telepon": g.nomorTelepon,
+        "Asal Perusahaan": g.asalPerusahaan,
+        "Alamat Perusahaan": g.alamatPerusahaan,
+        "Tujuan Berkunjung": g.tujuanBerkunjung,
+        "Perusahaan Tujuan": g.perusahaanTujuan,
+        Departemen: g.departemenTujuan,
+        "Orang Dituju": g.namaOrangDituju,
+        Keperluan: g.keperluan,
+        "No. Kartu Akses": g.nomorKartuAkses || "-",
+        "Status KTP": g.statusKtp || "Belum Diverifikasi",
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(excelRows);
 
       // Auto-adjust column widths
-      const colWidths = Object.keys(exportRows[0] || {}).map((key) => {
+      const colWidths = Object.keys(excelRows[0] || {}).map((key) => {
         const maxLen = Math.max(
           key.length,
-          ...exportRows.map((row: any) => String(row[key] || "").length)
+          ...excelRows.map((row: any) => String(row[key] || "").length)
         );
         return { wch: Math.min(Math.max(maxLen + 2, 10), 40) };
       });
@@ -96,7 +98,7 @@ export async function GET(request: Request) {
     }
 
     // ===================================
-    // PDF EXPORT (.pdf)
+    // PDF EXPORT (.pdf) - Asia/Jakarta UTC+7
     // ===================================
     if (format === "pdf") {
       const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
@@ -106,15 +108,19 @@ export async function GET(request: Request) {
       doc.setFont("helvetica", "bold");
       doc.text("LAPORAN KUNJUNGAN TAMU — SGH TOWER", 14, 15);
 
-      doc.setFontSize(10);
+      doc.setFontSize(9);
       doc.setFont("helvetica", "normal");
-      doc.text(`Tanggal Filter: ${dateTag} | Total Tamu: ${exportRows.length}`, 14, 22);
+      doc.text(
+        `Tanggal Filter: ${dateTag} | Total Tamu: ${guestRecords.length} | Waktu Cetak: ${formatDateTime(new Date())}`,
+        14,
+        22
+      );
 
       const tableHeaders = [
         [
           "No",
-          "Check-In",
-          "Check-Out",
+          "Tgl & Jam Masuk (WIB)",
+          "Tgl & Jam Keluar (WIB)",
           "Nama Tamu",
           "No. Telp",
           "Perusahaan",
@@ -126,18 +132,18 @@ export async function GET(request: Request) {
         ],
       ];
 
-      const tableData = exportRows.map((r) => [
-        r.No,
-        r["Waktu Check-In"],
-        r["Waktu Check-Out"],
-        r["Nama Lengkap"],
-        r["No. Telepon"],
-        r["Asal Perusahaan"],
-        r["Tujuan Berkunjung"],
-        r["Perusahaan Tujuan"],
-        r["Orang Dituju"],
-        r["No. Kartu Akses"],
-        r["Status KTP"],
+      const tableData = guestRecords.map((g, index) => [
+        index + 1,
+        g.waktuMasuk ? `${formatDateShort(g.waktuMasuk)} ${formatTime(g.waktuMasuk)}` : "-",
+        g.waktuKeluar ? `${formatDateShort(g.waktuKeluar)} ${formatTime(g.waktuKeluar)}` : "Belum Out",
+        g.namaLengkap,
+        g.nomorTelepon,
+        g.asalPerusahaan,
+        g.tujuanBerkunjung,
+        g.perusahaanTujuan,
+        g.namaOrangDituju,
+        g.nomorKartuAkses || "-",
+        g.statusKtp || "Belum Diverifikasi",
       ]);
 
       autoTable(doc, {

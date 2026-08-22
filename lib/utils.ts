@@ -3,42 +3,65 @@ import { twMerge } from "tailwind-merge";
 
 /**
  * Merge Tailwind CSS classes with clsx and tailwind-merge.
- * This is the standard utility used by shadcn/ui components.
  */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 /**
- * Format a Date to a localized Indonesian date string.
+ * Format a Date to localized Indonesian long date string in Asia/Jakarta (UTC+7).
  */
 export function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString("id-ID", {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "-";
+  return d.toLocaleDateString("id-ID", {
     day: "2-digit",
     month: "long",
     year: "numeric",
+    timeZone: "Asia/Jakarta",
   });
 }
 
 /**
- * Format a Date to a localized Indonesian time string (HH:mm).
+ * Format a Date to localized Indonesian short date string (DD/MM/YYYY) in Asia/Jakarta (UTC+7).
+ */
+export function formatDateShort(date: Date | string): string {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "-";
+  return d.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "Asia/Jakarta",
+  });
+}
+
+/**
+ * Format a Date to localized time string (HH:mm:ss) in Asia/Jakarta (UTC+7).
  */
 export function formatTime(date: Date | string): string {
-  return new Date(date).toLocaleTimeString("id-ID", {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "-";
+  return d.toLocaleTimeString("id-ID", {
     hour: "2-digit",
     minute: "2-digit",
-  });
+    second: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Jakarta",
+  }).replace(/\./g, ":");
 }
 
 /**
- * Format a Date to a full Indonesian date-time string.
+ * Format a Date to full Indonesian date-time string in Asia/Jakarta (UTC+7).
  */
 export function formatDateTime(date: Date | string): string {
-  return `${formatDate(date)}, ${formatTime(date)}`;
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "-";
+  return `${formatDate(date)}, ${formatTime(date)} WIB`;
 }
 
 /**
- * Get today's date at midnight (start of day) in local timezone.
+ * Get today's date at midnight (start of day) in Asia/Jakarta timezone.
  */
 export function getStartOfToday(): Date {
   const now = new Date();
@@ -47,7 +70,7 @@ export function getStartOfToday(): Date {
 }
 
 /**
- * Get today's date at end of day (23:59:59.999) in local timezone.
+ * Get today's date at end of day (23:59:59.999) in Asia/Jakarta timezone.
  */
 export function getEndOfToday(): Date {
   const now = new Date();

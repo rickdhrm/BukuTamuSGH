@@ -28,10 +28,13 @@ export function validatePersonalInfo(data: PersonalInfoFormData): PersonalInfoEr
     errors.namaLengkap = "Nama lengkap wajib diisi";
   }
 
-  if (!data.nomorTelepon.trim()) {
+  const phoneTrimmed = data.nomorTelepon.trim();
+  if (!phoneTrimmed) {
     errors.nomorTelepon = "Nomor telepon wajib diisi";
-  } else if (!/^[0-9+\-\s]{8,15}$/.exec(data.nomorTelepon.trim())) {
-    errors.nomorTelepon = "Nomor telepon tidak valid (contoh: 08123456789)";
+  } else if (!phoneTrimmed.startsWith("08")) {
+    errors.nomorTelepon = "Nomor telepon harus diawali dengan 08 (contoh: 081234567890)";
+  } else if (!/^[0-9+\-\s]{10,15}$/.exec(phoneTrimmed)) {
+    errors.nomorTelepon = "Nomor telepon tidak valid (hanya angka, 10-15 digit)";
   }
 
   if (!data.asalPerusahaan.trim()) {
