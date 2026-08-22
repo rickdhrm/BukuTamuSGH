@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Guest {
+  id                String    @id @default(uuid())
+  namaLengkap       String    @map("nama_lengkap")
+  nomorTelepon      String    @map("nomor_telepon")
+  asalPerusahaan    String    @map("asal_perusahaan")
+  alamatPerusahaan  String    @map("alamat_perusahaan")
+  tujuanBerkunjung  String    @map("tujuan_berkunjung")
+  perusahaanTujuan  String    @map("perusahaan_tujuan")
+  departemenTujuan  String    @map("departemen_tujuan")
+  namaOrangDituju   String    @map("nama_orang_dituju")
+  keperluan         String
+  selfiePath        String?   @map("selfie_path")
+  nomorKartuAkses   String?   @map("nomor_kartu_akses")
+  statusKtp         String?   @map("status_ktp")
+  waktuMasuk        DateTime  @default(now()) @map("waktu_masuk")
+  waktuKeluar       DateTime? @map("waktu_keluar")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  @@map("guests")
+}
+
+model PinConfig {
+  id             Int      @id @default(autoincrement())
+  accessPinHash  String   @map("access_pin_hash")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("pin_config")
+}
