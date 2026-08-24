@@ -23,9 +23,11 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in-up">
-      <div className="border-b border-slate-800 pb-3 mb-4">
-        <h2 className="text-xl font-bold text-white">Bagian 1: Data Diri & Instansi</h2>
-        <p className="text-xs text-slate-400">
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+          Bagian 1: Data Diri &amp; Instansi
+        </h2>
+        <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-0.5">
           Silakan isi informasi identitas dan asal perusahaan/instansi Anda.
         </p>
       </div>
@@ -68,7 +70,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       />
 
       <div className="pt-4 flex justify-end">
-        <Button type="submit" size="lg" className="w-full sm:w-auto">
+        <Button type="submit" size="lg" className="w-full sm:w-auto font-bold">
           Lanjut Ke Detail Kunjungan →
         </Button>
       </div>

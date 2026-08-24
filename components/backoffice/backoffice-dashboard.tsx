@@ -121,18 +121,18 @@ export const BackofficeDashboard: React.FC = () => {
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6 animate-fade-in">
       {/* Header Info Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
             Dasbor Manajemen Tamu
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
             Daftar kedatangan harian, kontrol verifikasi kartu &amp; KTP, serta analitik peak-time SGH Tower.
           </p>
         </div>
 
         {isMockMode && (
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-300 dark:border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-semibold">
             <span>⚡ Mode Demo (In-Memory Mock Active)</span>
           </div>
         )}
@@ -142,24 +142,24 @@ export const BackofficeDashboard: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="glass-card p-4 flex items-center justify-between border-l-4 border-l-blue-500">
           <div>
-            <span className="text-xs text-slate-400 font-medium">Total Tamu (Filter)</span>
-            <p className="text-2xl font-bold text-white mt-1">{totalGuests}</p>
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">Total Tamu (Filter)</span>
+            <p className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">{totalGuests}</p>
           </div>
           <span className="text-3xl">👥</span>
         </div>
 
         <div className="glass-card p-4 flex items-center justify-between border-l-4 border-l-emerald-500">
           <div>
-            <span className="text-xs text-slate-400 font-medium">Di Dalam Gedung</span>
-            <p className="text-2xl font-bold text-emerald-400 mt-1">{inBuildingCount}</p>
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">Di Dalam Gedung</span>
+            <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">{inBuildingCount}</p>
           </div>
           <span className="text-3xl">🟢</span>
         </div>
 
-        <div className="glass-card p-4 flex items-center justify-between border-l-4 border-l-slate-600">
+        <div className="glass-card p-4 flex items-center justify-between border-l-4 border-l-slate-400 dark:border-l-slate-600">
           <div>
-            <span className="text-xs text-slate-400 font-medium">Sudah Check-Out</span>
-            <p className="text-2xl font-bold text-slate-300 mt-1">{checkedOutCount}</p>
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">Sudah Check-Out</span>
+            <p className="text-2xl font-extrabold text-slate-700 dark:text-slate-300 mt-1">{checkedOutCount}</p>
           </div>
           <span className="text-3xl">⬜</span>
         </div>
@@ -184,12 +184,12 @@ export const BackofficeDashboard: React.FC = () => {
 
             {/* Date Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400 whitespace-nowrap">Tanggal:</span>
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium whitespace-nowrap">Tanggal:</span>
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="form-input text-xs py-2 px-3 bg-slate-900 text-white border-slate-700 rounded-xl"
+                className="form-input text-xs py-2 px-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-slate-300 dark:border-slate-700 rounded-xl transition-colors font-medium"
               />
             </div>
 
@@ -211,7 +211,7 @@ export const BackofficeDashboard: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => handleExport("xlsx")}
-              className="border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"
+              className="border-emerald-500/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/10 font-semibold"
             >
               📄 Ekspor Excel
             </Button>
@@ -219,7 +219,7 @@ export const BackofficeDashboard: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => handleExport("pdf")}
-              className="border-rose-500/40 text-rose-300 hover:bg-rose-500/10"
+              className="border-rose-500/40 text-rose-700 dark:text-rose-300 hover:bg-rose-500/10 font-semibold"
             >
               📕 Ekspor PDF
             </Button>

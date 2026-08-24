@@ -98,25 +98,25 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onSuccess }) => {
       >
         {/* Header Icon & Title */}
         <div className="space-y-2">
-          <div className="mx-auto w-16 h-16 bg-blue-600/20 border border-blue-500/40 rounded-2xl flex items-center justify-center text-blue-400 text-2xl shadow-lg shadow-blue-500/10">
+          <div className="mx-auto w-16 h-16 bg-blue-600/10 dark:bg-blue-600/20 border border-blue-500/30 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 text-2xl shadow-lg shadow-blue-500/10">
             🔒
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             SGH Backoffice
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
             Masukkan Access PIN untuk mengakses Dashboard Resepsionis
           </p>
         </div>
 
         {resetSuccessMessage && (
-          <div className="p-3 bg-emerald-950/60 border border-emerald-500/40 rounded-xl text-emerald-300 text-xs animate-fade-in">
+          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-500/40 rounded-xl text-emerald-800 dark:text-emerald-300 text-xs animate-fade-in font-medium">
             {resetSuccessMessage}
           </div>
         )}
 
         {error && (
-          <div className="p-3 bg-red-950/60 border border-red-500/40 rounded-xl text-red-300 text-xs animate-fade-in">
+          <div className="p-3 bg-red-50 dark:bg-red-950/60 border border-red-300 dark:border-red-500/40 rounded-xl text-red-700 dark:text-red-300 text-xs animate-fade-in font-medium">
             {error}
           </div>
         )}
@@ -128,8 +128,8 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onSuccess }) => {
               key={i}
               className={`w-4 h-4 rounded-full border transition-all duration-200 ${
                 i < pin.length
-                  ? "bg-blue-500 border-blue-400 shadow-md shadow-blue-500/40 scale-110"
-                  : "bg-slate-900 border-slate-700"
+                  ? "bg-blue-600 dark:bg-blue-500 border-blue-400 shadow-md shadow-blue-500/40 scale-110"
+                  : "bg-slate-200 dark:bg-slate-900 border-slate-300 dark:border-slate-700"
               }`}
             />
           ))}
@@ -142,7 +142,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onSuccess }) => {
               key={num}
               type="button"
               onClick={() => handleNumberClick(num)}
-              className="w-full h-14 rounded-2xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-white font-semibold text-xl flex items-center justify-center transition-all active:scale-95 shadow-sm"
+              className="w-full h-14 rounded-2xl bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 text-slate-900 dark:text-white font-bold text-xl flex items-center justify-center transition-all active:scale-95 shadow-sm"
             >
               {num}
             </button>
@@ -150,21 +150,21 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onSuccess }) => {
           <button
             type="button"
             onClick={handleClear}
-            className="w-full h-14 rounded-2xl bg-slate-900/40 hover:bg-slate-800/80 border border-slate-800 text-slate-400 font-medium text-xs flex items-center justify-center transition-all active:scale-95"
+            className="w-full h-14 rounded-2xl bg-slate-100 dark:bg-slate-900/40 hover:bg-slate-200 dark:hover:bg-slate-800/80 border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold text-xs flex items-center justify-center transition-all active:scale-95"
           >
             HAPUS
           </button>
           <button
             type="button"
             onClick={() => handleNumberClick("0")}
-            className="w-full h-14 rounded-2xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-white font-semibold text-xl flex items-center justify-center transition-all active:scale-95 shadow-sm"
+            className="w-full h-14 rounded-2xl bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 text-slate-900 dark:text-white font-bold text-xl flex items-center justify-center transition-all active:scale-95 shadow-sm"
           >
             0
           </button>
           <button
             type="button"
             onClick={handleBackspace}
-            className="w-full h-14 rounded-2xl bg-slate-900/40 hover:bg-slate-800/80 border border-slate-800 text-slate-300 font-medium text-lg flex items-center justify-center transition-all active:scale-95"
+            className="w-full h-14 rounded-2xl bg-slate-100 dark:bg-slate-900/40 hover:bg-slate-200 dark:hover:bg-slate-800/80 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-lg flex items-center justify-center transition-all active:scale-95"
           >
             ⌫
           </button>
@@ -186,18 +186,10 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onSuccess }) => {
           <button
             type="button"
             onClick={() => setIsResetModalOpen(true)}
-            className="text-xs text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
+            className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold transition-colors"
           >
             Lupa Access PIN? (Reset dengan Master PIN)
           </button>
-        </div>
-
-        {/* Dev Mode Helper Badge */}
-        <div className="pt-2 text-[10px] text-slate-500 border-t border-slate-800/80">
-          <span>Default Test Access PIN: </span>
-          <span className="font-mono text-slate-300">1234</span>
-          <span> | Master PIN: </span>
-          <span className="font-mono text-slate-300">master1234</span>
         </div>
       </div>
 

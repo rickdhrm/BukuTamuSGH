@@ -45,8 +45,8 @@ export const GuestTable: React.FC<GuestTableProps> = ({
     <div className="glass-card overflow-hidden">
       {/* 1. DESKTOP VIEW (Table for md: screens and wider) */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-left text-xs text-slate-300">
-          <thead className="bg-slate-900/90 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider text-[11px]">
+        <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+          <thead className="bg-slate-100 dark:bg-slate-900/90 text-slate-700 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider text-[11px]">
             <tr>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Nama &amp; Kontak</th>
@@ -58,13 +58,13 @@ export const GuestTable: React.FC<GuestTableProps> = ({
               <th className="px-4 py-3 text-right">Aksi</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/80">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
             {guests.length === 0 ? (
               <tr>
                 <td colSpan={8} className="py-12 text-center text-slate-500">
                   <div className="space-y-1">
                     <span className="text-2xl">📋</span>
-                    <p className="font-medium text-slate-400">Tidak ada data tamu</p>
+                    <p className="font-semibold text-slate-700 dark:text-slate-400">Tidak ada data tamu</p>
                     <p className="text-[11px]">
                       Halaman kosong harian (blank page). Belum ada tamu terdaftar untuk parameter filter ini.
                     </p>
@@ -78,10 +78,10 @@ export const GuestTable: React.FC<GuestTableProps> = ({
                 return (
                   <tr
                     key={guest.id}
-                    className={`transition-colors hover:bg-slate-800/50 ${
+                    className={`transition-colors hover:bg-slate-100/60 dark:hover:bg-slate-800/50 ${
                       isInBuilding
-                        ? "bg-emerald-950/10 border-l-4 border-l-emerald-500"
-                        : "bg-slate-950/40 text-slate-400 opacity-80 border-l-4 border-l-slate-700"
+                        ? "bg-emerald-50/50 dark:bg-emerald-950/10 border-l-4 border-l-emerald-500"
+                        : "bg-slate-50/40 dark:bg-slate-950/40 text-slate-500 dark:text-slate-400 opacity-90 border-l-4 border-l-slate-400 dark:border-l-slate-700"
                     }`}
                   >
                     {/* Status Indicator */}
@@ -89,79 +89,79 @@ export const GuestTable: React.FC<GuestTableProps> = ({
                       <span
                         className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                           isInBuilding
-                            ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                            : "bg-slate-800 text-slate-400 border-slate-700"
+                            ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/30"
+                            : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700"
                         }`}
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full ${
-                            isInBuilding ? "bg-emerald-400 animate-pulse" : "bg-slate-500"
+                            isInBuilding ? "bg-emerald-500 dark:bg-emerald-400 animate-pulse" : "bg-slate-400 dark:bg-slate-500"
                           }`}
                         />
-                        {isInBuilding ? "Di Gedung" : "Checked-Out"}
+                        <span>{isInBuilding ? "Di Dalam" : "Check-Out"}</span>
                       </span>
                     </td>
 
-                    {/* Name & Phone (Clickable to open Detail Modal) */}
+                    {/* Guest Name & Contact */}
                     <td className="px-4 py-3">
                       <button
                         onClick={() => setSelectedGuest(guest)}
-                        className="text-left font-semibold text-white hover:text-blue-400 hover:underline block"
+                        className="font-bold text-blue-600 dark:text-blue-400 hover:underline text-left"
                       >
                         {guest.namaLengkap}
                       </button>
-                      <span className="text-[10px] text-slate-400 block">{guest.nomorTelepon}</span>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">{guest.nomorTelepon}</p>
                     </td>
 
                     {/* Company */}
                     <td className="px-4 py-3">
-                      <span className="font-medium text-slate-200 block">{guest.asalPerusahaan}</span>
+                      <p className="font-semibold text-slate-900 dark:text-white">{guest.asalPerusahaan}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[150px]">
+                        {guest.alamatPerusahaan}
+                      </p>
                     </td>
 
                     {/* Purpose & Target Person */}
                     <td className="px-4 py-3">
-                      <span className="font-medium text-slate-200 block">{guest.perusahaanTujuan}</span>
-                      <span className="text-[10px] text-slate-400 block">
-                        u/p {guest.namaOrangDituju} ({guest.tujuanBerkunjung})
+                      <span className="font-semibold text-slate-800 dark:text-slate-200 capitalize">
+                        {guest.tujuanBerkunjung}
                       </span>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Bertemu: <strong className="text-slate-900 dark:text-white">{guest.namaOrangDituju}</strong> ({guest.perusahaanTujuan})
+                      </p>
                     </td>
 
                     {/* Timestamps */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="text-[11px]">
-                        <span className="text-emerald-400 font-mono">In: {formatTime(guest.waktuMasuk)}</span>
-                        {guest.waktuKeluar && (
-                          <span className="text-slate-400 font-mono block">Out: {formatTime(guest.waktuKeluar)}</span>
-                        )}
+                    <td className="px-4 py-3 whitespace-nowrap font-mono text-[11px]">
+                      <div className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                        In: {formatTime(guest.waktuMasuk)}
+                      </div>
+                      <div className="text-slate-500 dark:text-slate-400">
+                        Out: {guest.waktuKeluar ? formatTime(guest.waktuKeluar) : "-"}
                       </div>
                     </td>
 
-                    {/* Access Card Input (Editable) */}
+                    {/* Access Card Number Input */}
                     <td className="px-4 py-3">
-                      {editingCardId === guest.id ? (
-                        <input
-                          type="text"
-                          autoFocus
-                          value={tempCardVal}
-                          onChange={(e) => setTempCardVal(e.target.value)}
-                          onBlur={() => handleCardBlur(guest.id)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleCardBlur(guest.id);
-                          }}
-                          className="w-24 px-2 py-1 bg-slate-900 border border-blue-500 rounded text-xs text-amber-300 font-mono focus:outline-none"
-                        />
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setEditingCardId(guest.id);
-                            setTempCardVal(guest.nomorKartuAkses || "");
-                          }}
-                          className="px-2.5 py-1 rounded bg-slate-900/60 border border-slate-700 hover:border-blue-500/50 text-amber-300 font-mono text-xs font-medium"
-                          title="Klik untuk mengubah No. Kartu Akses"
-                        >
-                          {guest.nomorKartuAkses || "+ Input Kartu"}
-                        </button>
-                      )}
+                      <input
+                        type="text"
+                        placeholder="No. Kartu"
+                        value={
+                          editingCardId === guest.id
+                            ? tempCardVal
+                            : guest.nomorKartuAkses || ""
+                        }
+                        onFocus={() => {
+                          setEditingCardId(guest.id);
+                          setTempCardVal(guest.nomorKartuAkses || "");
+                        }}
+                        onChange={(e) => setTempCardVal(e.target.value)}
+                        onBlur={() => handleCardBlur(guest.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleCardBlur(guest.id);
+                        }}
+                        className="w-24 px-2 py-1 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono focus:border-blue-500 focus:outline-none transition-colors"
+                      />
                     </td>
 
                     {/* KTP Status Dropdown */}
@@ -171,7 +171,7 @@ export const GuestTable: React.FC<GuestTableProps> = ({
                         onChange={(e) =>
                           onUpdateGuest(guest.id, { statusKtp: e.target.value })
                         }
-                        className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1 focus:outline-none focus:border-blue-500"
+                        className="px-2 py-1 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium focus:border-blue-500 focus:outline-none transition-colors cursor-pointer"
                       >
                         {KTP_STATUS_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>
@@ -181,17 +181,25 @@ export const GuestTable: React.FC<GuestTableProps> = ({
                       </select>
                     </td>
 
-                    {/* Actions — One-Click Check-Out */}
-                    <td className="px-4 py-3 text-right">
-                      {isInBuilding ? (
+                    {/* Actions */}
+                    <td className="px-4 py-3 text-right whitespace-nowrap space-x-2">
+                      <button
+                        onClick={() => setSelectedGuest(guest)}
+                        className="px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 border border-blue-200 dark:border-blue-500/30 rounded-lg text-xs font-semibold transition-all"
+                        title="Lihat Detail"
+                      >
+                        Detail
+                      </button>
+
+                      {isInBuilding && (
                         <button
-                          onClick={() => onUpdateGuest(guest.id, { isCheckout: true })}
-                          className="px-3 py-1 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 rounded-lg font-medium text-xs transition-all shadow-sm active:scale-95"
+                          onClick={() =>
+                            onUpdateGuest(guest.id, { isCheckout: true })
+                          }
+                          className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-all"
                         >
                           Check-Out
                         </button>
-                      ) : (
-                        <span className="text-[10px] text-slate-500 italic">Selesai</span>
                       )}
                     </td>
                   </tr>
@@ -202,12 +210,13 @@ export const GuestTable: React.FC<GuestTableProps> = ({
         </table>
       </div>
 
-      {/* 2. MOBILE CARD VIEW (For phone screens < 768px) */}
+      {/* 2. MOBILE CARD VIEW (Stack view for screens < 768px) */}
       <div className="block md:hidden p-4 space-y-3">
         {guests.length === 0 ? (
-          <div className="py-8 text-center text-slate-500 space-y-1">
-            <span className="text-2xl">📋</span>
-            <p className="font-medium text-slate-400">Tidak ada data tamu</p>
+          <div className="py-8 text-center text-slate-500">
+            <span className="text-2xl block mb-1">📋</span>
+            <p className="font-semibold text-slate-700 dark:text-slate-400 text-xs">Tidak ada data tamu</p>
+            <p className="text-[10px]">Belum ada tamu terdaftar untuk filter ini.</p>
           </div>
         ) : (
           guests.map((guest) => {
@@ -216,68 +225,91 @@ export const GuestTable: React.FC<GuestTableProps> = ({
             return (
               <div
                 key={guest.id}
-                className={`p-4 rounded-xl border space-y-3 ${
+                className={`p-4 rounded-xl border space-y-3 transition-colors ${
                   isInBuilding
-                    ? "bg-emerald-950/20 border-emerald-500/40"
-                    : "bg-slate-900/60 border-slate-800 opacity-80"
+                    ? "bg-white dark:bg-slate-900/90 border-emerald-300 dark:border-emerald-500/40 shadow-sm"
+                    : "bg-slate-50 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 opacity-90"
                 }`}
               >
+                {/* Top Row: Name & Status */}
                 <div className="flex items-start justify-between">
                   <div>
                     <button
                       onClick={() => setSelectedGuest(guest)}
-                      className="font-bold text-white text-sm hover:text-blue-400 hover:underline text-left"
+                      className="font-bold text-sm text-blue-600 dark:text-blue-400 hover:underline text-left block"
                     >
                       {guest.namaLengkap}
                     </button>
-                    <p className="text-xs text-slate-400">{guest.asalPerusahaan}</p>
+                    <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                      {guest.asalPerusahaan}
+                    </span>
                   </div>
+
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                       isInBuilding
-                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                        : "bg-slate-800 text-slate-400 border-slate-700"
+                        ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/30"
+                        : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700"
                     }`}
                   >
-                    {isInBuilding ? "🟢 Di Gedung" : "⬜ Checked-Out"}
+                    <span>{isInBuilding ? "🟢 Di Dalam" : "⬜ Out"}</span>
                   </span>
                 </div>
 
-                <div className="text-xs text-slate-300 space-y-1 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/60">
+                {/* Details Grid */}
+                <div className="grid grid-cols-2 gap-2 text-xs border-t border-b border-slate-200 dark:border-slate-800 py-2">
                   <div>
-                    <span className="text-slate-500">Tujuan: </span>
-                    <span>{guest.perusahaanTujuan} ({guest.namaOrangDituju})</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Tujuan</span>
+                    <span className="font-semibold text-slate-900 dark:text-white capitalize">
+                      {guest.tujuanBerkunjung}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-slate-500">Check-In: </span>
-                    <span className="text-emerald-400 font-mono">{formatTime(guest.waktuMasuk)}</span>
-                    {guest.waktuKeluar && (
-                      <span className="text-slate-400 font-mono"> • Out: {formatTime(guest.waktuKeluar)}</span>
-                    )}
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Orang Dituju</span>
+                    <span className="font-semibold text-slate-900 dark:text-white">
+                      {guest.namaOrangDituju}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Check-In</span>
+                    <span className="font-mono text-emerald-700 dark:text-emerald-400 font-semibold">
+                      {formatTime(guest.waktuMasuk)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Check-Out</span>
+                    <span className="font-mono text-slate-600 dark:text-slate-400">
+                      {guest.waktuKeluar ? formatTime(guest.waktuKeluar) : "-"}
+                    </span>
                   </div>
                 </div>
 
-                {/* Mobile Controls Grid */}
+                {/* Inputs & Actions */}
                 <div className="flex items-center justify-between gap-2 pt-1">
-                  <div className="flex items-center gap-2">
-                    {/* Access Card */}
-                    <button
-                      onClick={() => {
-                        const val = prompt("Masukkan No. Kartu Akses:", guest.nomorKartuAkses || "");
-                        if (val !== null) {
-                          onUpdateGuest(guest.id, { nomorKartuAkses: val });
-                        }
+                  <div className="flex items-center gap-2 flex-1">
+                    <input
+                      type="text"
+                      placeholder="No. Kartu"
+                      value={
+                        editingCardId === guest.id
+                          ? tempCardVal
+                          : guest.nomorKartuAkses || ""
+                      }
+                      onFocus={() => {
+                        setEditingCardId(guest.id);
+                        setTempCardVal(guest.nomorKartuAkses || "");
                       }}
-                      className="px-2 py-1 rounded bg-slate-900 border border-slate-700 text-amber-300 font-mono text-xs"
-                    >
-                      {guest.nomorKartuAkses || "+ Kartu"}
-                    </button>
+                      onChange={(e) => setTempCardVal(e.target.value)}
+                      onBlur={() => handleCardBlur(guest.id)}
+                      className="w-24 px-2 py-1 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono focus:border-blue-500 focus:outline-none"
+                    />
 
-                    {/* KTP Dropdown */}
                     <select
                       value={guest.statusKtp || "belum_diverifikasi"}
-                      onChange={(e) => onUpdateGuest(guest.id, { statusKtp: e.target.value })}
-                      className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1"
+                      onChange={(e) =>
+                        onUpdateGuest(guest.id, { statusKtp: e.target.value })
+                      }
+                      className="px-2 py-1 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium"
                     >
                       {KTP_STATUS_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -287,14 +319,25 @@ export const GuestTable: React.FC<GuestTableProps> = ({
                     </select>
                   </div>
 
-                  {isInBuilding && (
+                  <div className="flex items-center gap-1.5">
                     <button
-                      onClick={() => onUpdateGuest(guest.id, { isCheckout: true })}
-                      className="px-3 py-1 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 rounded-lg text-xs font-semibold"
+                      onClick={() => setSelectedGuest(guest)}
+                      className="px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30 rounded-lg text-xs font-semibold"
                     >
-                      Check-Out
+                      Detail
                     </button>
-                  )}
+
+                    {isInBuilding && (
+                      <button
+                        onClick={() =>
+                          onUpdateGuest(guest.id, { isCheckout: true })
+                        }
+                        className="px-2.5 py-1 bg-emerald-600 text-white rounded-lg text-xs font-semibold"
+                      >
+                        Out
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
@@ -302,6 +345,7 @@ export const GuestTable: React.FC<GuestTableProps> = ({
         )}
       </div>
 
+      {/* Guest Detail Popup Modal */}
       <GuestDetailModal
         guest={selectedGuest}
         isOpen={!!selectedGuest}

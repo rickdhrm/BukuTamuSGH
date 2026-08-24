@@ -17,7 +17,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
       {/* Step Numbers & Connecting Lines */}
       <div className="flex items-center justify-between relative px-2">
         {/* Background Line */}
-        <div className="absolute top-1/2 left-6 right-6 -translate-y-1/2 h-0.5 bg-slate-800 -z-0" />
+        <div className="absolute top-1/2 left-6 right-6 -translate-y-1/2 h-0.5 bg-slate-200 dark:bg-slate-800 -z-0" />
         
         {/* Progress Line */}
         <div
@@ -43,7 +43,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                     "bg-blue-500 text-white shadow-blue-500/50 ring-4 ring-blue-500/20 border border-blue-300",
                   !isCompleted &&
                     !isCurrent &&
-                    "bg-slate-900 text-slate-400 border border-slate-700/80"
+                    "bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700/80"
                 )}
               >
                 {isCompleted ? (
@@ -68,8 +68,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
               {/* Title below node */}
               <span
                 className={cn(
-                  "mt-2 text-xs font-medium transition-colors text-center hidden sm:block",
-                  isCurrent ? "text-blue-400 font-semibold" : "text-slate-400"
+                  "mt-2 text-xs font-semibold transition-colors text-center hidden sm:block",
+                  isCurrent ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400"
                 )}
               >
                 {stepTitles[i]}

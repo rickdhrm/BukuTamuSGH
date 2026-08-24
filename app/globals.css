@@ -1,11 +1,14 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode selector (.dark) in Tailwind CSS v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ===========================
    Design System — Buku Tamu SGH Tower
    =========================== */
 
 :root {
-  /* Colors */
+  /* Common Brand Colors */
   --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
   --color-primary-light: #60a5fa;
@@ -15,27 +18,21 @@
   --color-error: #ef4444;
   --color-warning: #f59e0b;
 
-  /* Surface colors (dark theme) */
-  --color-bg-base: #0b1120;
-  --color-bg-surface: rgba(15, 23, 42, 0.8);
-  --color-bg-elevated: rgba(30, 41, 59, 0.6);
-  --color-bg-glass: rgba(255, 255, 255, 0.05);
-
-  /* Text */
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
+  /* Default Light Theme variables */
+  --color-bg-base: #f8fafc;
+  --color-bg-surface: #ffffff;
+  --color-bg-elevated: #f1f5f9;
+  --color-bg-glass: rgba(15, 23, 42, 0.04);
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
   --color-text-muted: #64748b;
-  --color-text-inverse: #0f172a;
+  --color-text-inverse: #ffffff;
+  --color-border: #e2e8f0;
+  --color-border-focus: #3b82f6;
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.2);
 
-  /* Borders */
-  --color-border: rgba(148, 163, 184, 0.2);
-  --color-border-focus: rgba(59, 130, 246, 0.5);
-
-  /* Shadows */
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(148, 163, 184, 0.1);
-  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
-
-  /* Spacing */
+  /* Spacing & Radius */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
@@ -45,6 +42,22 @@
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Theme Overrides — High Visibility Palette */
+html.dark {
+  --color-bg-base: #0b1120;
+  --color-bg-surface: rgba(15, 23, 42, 0.95);
+  --color-bg-elevated: rgba(30, 41, 59, 0.85);
+  --color-bg-glass: rgba(255, 255, 255, 0.08);
+  --color-text-primary: #ffffff;      /* Brilliant Pure White */
+  --color-text-secondary: #f1f5f9;    /* Crisp Light Slate */
+  --color-text-muted: #cbd5e1;        /* Bright Muted Slate */
+  --color-text-inverse: #0f172a;
+  --color-border: rgba(148, 163, 184, 0.25);
+  --color-border-focus: #60a5fa;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(148, 163, 184, 0.2);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
 }
 
 @theme inline {
@@ -63,18 +76,51 @@ body {
   font-family: var(--font-inter, "Inter", system-ui, -apple-system, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Force dark mode heading titles to be brilliant pure white */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark .title-text {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Light mode heading titles */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light .title-text {
+  color: #0f172a !important;
 }
 
 /* ===========================
    Gradient Background
    =========================== */
 
-.bg-gradient-main {
+html.dark .bg-gradient-main {
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
     linear-gradient(to bottom, #0b1120 0%, #0f172a 50%, #0b1120 100%);
+  min-height: 100vh;
+}
+
+html.light .bg-gradient-main {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+    linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
+  min-height: 100vh;
+}
+
+/* Default fallback before class addition */
+.bg-gradient-main {
   min-height: 100vh;
 }
 
@@ -89,6 +135,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
 }
 
 .glass-card-elevated {
@@ -97,6 +144,7 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
 }
 
 /* ===========================
@@ -125,17 +173,12 @@ body {
 
 .form-input:focus {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.form-input:hover:not(:focus) {
-  border-color: rgba(148, 163, 184, 0.35);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .form-input.error {
   border-color: var(--color-error);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
 /* ===========================
@@ -145,7 +188,7 @@ body {
 .form-label {
   display: block;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-text-secondary);
   margin-bottom: 0.375rem;
 }
@@ -158,6 +201,7 @@ body {
 .form-error {
   display: block;
   font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--color-error);
   margin-top: 0.375rem;
 }
@@ -193,37 +237,6 @@ body {
   }
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-  }
-}
-
 .animate-fade-in-up {
   animation: fadeInUp 0.4s ease-out;
 }
@@ -234,14 +247,6 @@ body {
 
 .animate-scale-in {
   animation: scaleIn 0.3s ease-out;
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft 0.35s ease-out;
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.35s ease-out;
 }
 
 /* ===========================
@@ -257,10 +262,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(148, 163, 184, 0.4);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(148, 163, 184, 0.6);
 }

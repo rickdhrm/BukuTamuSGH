@@ -6,6 +6,7 @@ import { PersonalInfoStep } from "./personal-info-step";
 import { VisitDetailsStep } from "./visit-details-step";
 import { SelfieStep } from "./selfie-step";
 import { ConfirmationScreen } from "./confirmation-screen";
+import { useTheme } from "@/components/theme-provider";
 import {
   PersonalInfoFormData,
   VisitDetailsFormData,
@@ -46,6 +47,8 @@ export const GuestRegistrationForm: React.FC = () => {
     namaLengkap: string;
     waktuMasuk: string;
   } | null>(null);
+
+  const { theme, toggleTheme } = useTheme();
 
   // Field change handlers
   const handlePersonalInfoChange = (field: keyof PersonalInfoFormData, value: string) => {
@@ -156,17 +159,31 @@ export const GuestRegistrationForm: React.FC = () => {
 
   return (
     <div className="w-full max-w-xl mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-2">
+      {/* Top Header & Theme Switcher */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-700 dark:text-blue-300 text-xs font-bold shadow-sm">
           <span>🏢 SGH Tower</span>
           <span>•</span>
           <span>Portal Tamu</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          type="button"
+          className="text-xs text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-white bg-white/90 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 px-3 py-1.5 rounded-xl shadow-sm transition-all flex items-center gap-1.5 font-bold"
+          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+        >
+          <span>{theme === "dark" ? "☀️ Light" : "🌙 Dark"}</span>
+        </button>
+      </div>
+
+      {/* Main Title Header */}
+      <div className="text-center mb-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Buku Tamu Digital
         </h1>
-        <p className="text-slate-400 text-xs sm:text-sm mt-1">
+        <p className="text-slate-700 dark:text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
           Pendaftaran Kunjungan Tamu Gedung SGH Tower
         </p>
       </div>
@@ -218,7 +235,7 @@ export const GuestRegistrationForm: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className="mt-8 text-center text-slate-500 text-xs">
+      <footer className="mt-8 text-center text-slate-600 dark:text-slate-300 text-xs font-medium">
         <p>© {new Date().getFullYear()} SGH Tower Building Management. All rights reserved.</p>
       </footer>
     </div>

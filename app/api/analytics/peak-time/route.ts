@@ -6,21 +6,32 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const dateStr = searchParams.get("date") || new Date().toISOString().split("T")[0];
+    const intervalStr = searchParams.get("interval") || "60"; // "30" or "60"
+    const is30Min = intervalStr === "30";
 
-    // Prepare hourly distribution template (08:00 to 18:00)
-    const hourlyMap: Record<string, number> = {
-      "08:00": 0,
-      "09:00": 0,
-      "10:00": 0,
-      "11:00": 0,
-      "12:00": 0,
-      "13:00": 0,
-      "14:00": 0,
-      "15:00": 0,
-      "16:00": 0,
-      "17:00": 0,
-      "18:00": 0,
-    };
+    // Build time slots strictly from 06:00 to 18:00
+    const timeSlots: string[] = [];
+    const hourlyMap: Record<string, number> = {};
+
+    for (let h = 6; h <= 18; h++) {
+      const hourStr = String(h).padStart(2, "0");
+      const slot60 = `${hourStr}:00`;
+      
+      if (is30Min) {
+        const slot30_00 = `${hourStr}:00`;
+        timeSlots.push(slot30_00);
+        hourlyMap[slot30_00] = 0;
+
+        if (h < 18) {
+          const slot30_30 = `${hourStr}:30`;
+          timeSlots.push(slot30_30);
+          hourlyMap[slot30_30] = 0;
+        }
+      } else {
+        timeSlots.push(slot60);
+        hourlyMap[slot60] = 0;
+      }
+    }
 
     let guestRecords: any[] = [];
 
@@ -39,22 +50,35 @@ export async function GET(request: Request) {
       );
     }
 
-    // Populate hourly counts
+    // Populate counts based on interval
     guestRecords.forEach((guest) => {
       const dateObj = new Date(guest.waktuMasuk);
       const hour = dateObj.getHours();
-      const formattedHour = `${String(hour).padStart(2, "0")}:00`;
-      if (hourlyMap[formattedHour] !== undefined) {
-        hourlyMap[formattedHour] += 1;
+      const minutes = dateObj.getMinutes();
+
+      if (hour >= 6 && hour <= 18) {
+        let slotKey = "";
+        const hourStr = String(hour).padStart(2, "0");
+
+        if (is30Min) {
+          const minStr = minutes >= 30 ? "30" : "00";
+          slotKey = `${hourStr}:${minStr}`;
+        } else {
+          slotKey = `${hourStr}:00`;
+        }
+
+        if (hourlyMap[slotKey] !== undefined) {
+          hourlyMap[slotKey] += 1;
+        }
       }
     });
 
-    const chartData = Object.entries(hourlyMap).map(([hour, count]) => ({
-      hour,
-      tamu: count,
+    const chartData = timeSlots.map((slot) => ({
+      hour: slot,
+      tamu: hourlyMap[slot] || 0,
     }));
 
-    return NextResponse.json({ date: dateStr, data: chartData });
+    return NextResponse.json({ date: dateStr, interval: intervalStr, data: chartData });
   } catch (error: any) {
     return NextResponse.json(
       { message: "Gagal mengambil data analitik: " + error.message },

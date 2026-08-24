@@ -28,9 +28,11 @@ export const VisitDetailsStep: React.FC<VisitDetailsStepProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in-up">
-      <div className="border-b border-slate-800 pb-3 mb-4">
-        <h2 className="text-xl font-bold text-white">Bagian 2: Detail Kunjungan</h2>
-        <p className="text-xs text-slate-400">
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+          Bagian 2: Detail Kunjungan
+        </h2>
+        <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-0.5">
           Silakan isi informasi pihak dan keperluan kunjungan Anda di SGH Tower.
         </p>
       </div>
@@ -100,11 +102,11 @@ export const VisitDetailsStep: React.FC<VisitDetailsStepProps> = ({
           variant="outline"
           size="lg"
           onClick={onBack}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto font-semibold"
         >
           ← Kembali
         </Button>
-        <Button type="submit" size="lg" className="w-full sm:w-auto">
+        <Button type="submit" size="lg" className="w-full sm:w-auto font-bold">
           Lanjut Ke Selfie Verification →
         </Button>
       </div>

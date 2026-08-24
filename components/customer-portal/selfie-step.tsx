@@ -72,15 +72,17 @@ export const SelfieStep: React.FC<SelfieStepProps> = ({
 
   return (
     <div className="space-y-4 animate-fade-in-up">
-      <div className="border-b border-slate-800 pb-3 mb-4">
-        <h2 className="text-xl font-bold text-white">Bagian 3: Verifikasi Keamanan</h2>
-        <p className="text-xs text-slate-400">
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+          Bagian 3: Verifikasi Keamanan
+        </h2>
+        <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-0.5">
           Ambil foto selfie langsung dari kamera perangkat Anda untuk verifikasi identitas gedung. Foto akan dikompresi otomatis (&lt; 500KB).
         </p>
       </div>
 
       {error && (
-        <div className="p-3 bg-red-950/60 border border-red-500/40 rounded-xl text-red-300 text-xs animate-fade-in">
+        <div className="p-3 bg-red-50 dark:bg-red-950/60 border border-red-300 dark:border-red-500/40 rounded-xl text-red-700 dark:text-red-300 text-xs animate-fade-in font-bold">
           {error}
         </div>
       )}
@@ -95,18 +97,18 @@ export const SelfieStep: React.FC<SelfieStepProps> = ({
               alt="Selfie preview"
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-3 right-3 bg-emerald-500/90 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
+            <div className="absolute top-3 right-3 bg-emerald-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
               <span>✓ Foto Terverifikasi (&lt;500KB)</span>
             </div>
           </div>
         ) : (
           /* Live Camera Viewfinder ONLY */
-          <div className="relative w-full max-w-sm rounded-2xl overflow-hidden border border-slate-700 shadow-inner bg-slate-950 aspect-[4/3] flex flex-col items-center justify-center">
+          <div className="relative w-full max-w-sm rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700 shadow-inner bg-slate-950 aspect-[4/3] flex flex-col items-center justify-center">
             {cameraError ? (
-              <div className="p-4 text-center space-y-2 text-red-300 text-xs">
+              <div className="p-4 text-center space-y-2 text-red-300 text-xs font-medium">
                 <span className="text-2xl block">📷🚫</span>
                 <p>{cameraError}</p>
-                <p className="text-slate-400 text-[11px]">
+                <p className="text-slate-300 text-[11px]">
                   Buka pengaturan peramban Anda untuk mengizinkan akses kamera.
                 </p>
               </div>
@@ -130,7 +132,7 @@ export const SelfieStep: React.FC<SelfieStepProps> = ({
             {isCompressing && (
               <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center gap-2 text-white">
                 <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs font-medium">Mengompresi Foto...</span>
+                <span className="text-xs font-bold">Mengompresi Foto...</span>
               </div>
             )}
           </div>
@@ -144,7 +146,7 @@ export const SelfieStep: React.FC<SelfieStepProps> = ({
               onClick={capturePhoto}
               isLoading={isCompressing}
               disabled={!!cameraError}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/20"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/20"
             >
               📸 Ambil Foto Selfie Langsung
             </Button>
@@ -153,7 +155,7 @@ export const SelfieStep: React.FC<SelfieStepProps> = ({
               type="button"
               variant="outline"
               onClick={onRetake}
-              className="w-full"
+              className="w-full font-semibold"
             >
               🔄 Ambil Ulang Foto
             </Button>
@@ -168,7 +170,7 @@ export const SelfieStep: React.FC<SelfieStepProps> = ({
           size="lg"
           onClick={onBack}
           disabled={isSubmitting}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto font-semibold"
         >
           ← Kembali
         </Button>
@@ -178,7 +180,7 @@ export const SelfieStep: React.FC<SelfieStepProps> = ({
           disabled={!selfieImage}
           isLoading={isSubmitting}
           onClick={onSubmit}
-          className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/20"
+          className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-emerald-500/20"
         >
           ✅ Submit &amp; Check-In
         </Button>
