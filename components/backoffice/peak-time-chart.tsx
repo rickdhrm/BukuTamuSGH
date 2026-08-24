@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { useTheme } from "@/components/theme-provider";
 
 interface PeakTimeChartProps {
   selectedDate: string;
@@ -20,6 +21,12 @@ export const PeakTimeChart: React.FC<PeakTimeChartProps> = ({ selectedDate }) =>
   const [chartData, setChartData] = useState<{ hour: string; tamu: number }[]>([]);
   const [interval, setInterval] = useState<"60" | "30">("60");
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -44,31 +51,39 @@ export const PeakTimeChart: React.FC<PeakTimeChartProps> = ({ selectedDate }) =>
 
   const maxVal = Math.max(...chartData.map((d) => d.tamu), 1);
   const is30Min = interval === "30";
+  const isDark = theme === "dark";
+
+  // Theme adaptive colors
+  const gridColor = isDark ? "#1e293b" : "#e2e8f0";
+  const textColor = isDark ? "#cbd5e1" : "#334155";
+  const tooltipBg = isDark ? "#0f172a" : "#ffffff";
+  const tooltipBorder = isDark ? "#334155" : "#cbd5e1";
+  const tooltipText = isDark ? "#ffffff" : "#0f172a";
 
   return (
     <div className="glass-card p-5 space-y-4">
       {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800/80 pb-3">
         <div>
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
+          <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
             <span>📈 Grafik Peak Time Kunjungan</span>
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-600 dark:text-slate-200 font-semibold mt-0.5">
             Distribusi kedatangan tamu (06:00 – 18:00) pada tanggal{" "}
-            <span className="font-mono text-blue-400">{selectedDate}</span>
+            <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">{selectedDate}</span>
           </p>
         </div>
 
         {/* Interval Dropdown Toggle */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <label htmlFor="interval-select" className="text-xs text-slate-400 font-medium whitespace-nowrap">
+          <label htmlFor="interval-select" className="text-xs text-slate-700 dark:text-slate-200 font-bold whitespace-nowrap">
             Interval:
           </label>
           <select
             id="interval-select"
             value={interval}
             onChange={(e) => setInterval(e.target.value as "60" | "30")}
-            className="bg-slate-900 text-white border border-slate-700/80 rounded-xl text-xs px-3 py-1.5 focus:outline-none focus:border-blue-500 transition-all font-medium"
+            className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700/80 rounded-xl text-xs px-3 py-1.5 focus:outline-none focus:border-blue-500 transition-all font-bold cursor-pointer"
           >
             <option value="60">60 Menit (Per Jam)</option>
             <option value="30">30 Menit</option>
@@ -76,15 +91,15 @@ export const PeakTimeChart: React.FC<PeakTimeChartProps> = ({ selectedDate }) =>
         </div>
       </div>
 
-      {/* Chart Body */}
-      {isLoading ? (
-        <div className="h-56 flex items-center justify-center text-xs text-slate-400 gap-2">
+      {/* Chart Body Container with Explicit Min-Height */}
+      {isLoading || !isMounted ? (
+        <div className="h-64 min-h-[250px] w-full flex items-center justify-center text-xs text-slate-600 dark:text-slate-300 font-semibold gap-2">
           <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
           <span>Memuat data analitik...</span>
         </div>
       ) : (
-        <div className="h-60 w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-64 min-h-[250px] w-full pt-2">
+          <ResponsiveContainer width="100%" height="100%" minHeight={250}>
             <BarChart
               data={chartData}
               margin={{
@@ -94,10 +109,10 @@ export const PeakTimeChart: React.FC<PeakTimeChartProps> = ({ selectedDate }) =>
                 bottom: is30Min ? 25 : 5,
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
               <XAxis
                 dataKey="hour"
-                stroke="#64748b"
+                stroke={textColor}
                 fontSize={is30Min ? 9 : 11}
                 tickLine={false}
                 axisLine={false}
@@ -107,7 +122,7 @@ export const PeakTimeChart: React.FC<PeakTimeChartProps> = ({ selectedDate }) =>
                 height={is30Min ? 45 : 30}
               />
               <YAxis
-                stroke="#64748b"
+                stroke={textColor}
                 fontSize={11}
                 tickLine={false}
                 axisLine={false}
@@ -115,11 +130,13 @@ export const PeakTimeChart: React.FC<PeakTimeChartProps> = ({ selectedDate }) =>
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#0f172a",
-                  borderColor: "#334155",
+                  backgroundColor: tooltipBg,
+                  borderColor: tooltipBorder,
                   borderRadius: "12px",
                   fontSize: "12px",
-                  color: "#f8fafc",
+                  color: tooltipText,
+                  fontWeight: "bold",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                 }}
                 formatter={(value: any) => [`${value ?? 0} Tamu`, "Jumlah Kedatangan"]}
                 labelFormatter={(label: any) => `Jam ${label}`}
