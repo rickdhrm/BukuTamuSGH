@@ -2,6 +2,34 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { mockGuestsStore } from "@/app/api/guests/route";
 
+/**
+ * Extract hour and minutes explicitly in Asia/Jakarta (UTC+7) timezone
+ * to prevent server-side UTC timezone skew on Vercel/cloud deployments.
+ */
+function getJakartaHourAndMinutes(date: Date): { hour: number; minutes: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Jakarta",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(date);
+
+  let hour = 0;
+  let minutes = 0;
+
+  for (const part of parts) {
+    if (part.type === "hour") {
+      hour = parseInt(part.value, 10);
+      if (hour === 24) hour = 0;
+    }
+    if (part.type === "minute") {
+      minutes = parseInt(part.value, 10);
+    }
+  }
+
+  return { hour, minutes };
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -36,8 +64,10 @@ export async function GET(request: Request) {
     let guestRecords: any[] = [];
 
     try {
-      const startOfDay = new Date(`${dateStr}T00:00:00.000Z`);
-      const endOfDay = new Date(`${dateStr}T23:59:59.999Z`);
+      // Query PostgreSQL using explicit Asia/Jakarta (UTC+7) start and end of day
+      const startOfDay = new Date(`${dateStr}T00:00:00.000+07:00`);
+      const endOfDay = new Date(`${dateStr}T23:59:59.999+07:00`);
+
       guestRecords = await prisma.guest.findMany({
         where: {
           waktuMasuk: { gte: startOfDay, lte: endOfDay },
@@ -50,11 +80,10 @@ export async function GET(request: Request) {
       );
     }
 
-    // Populate counts based on interval
+    // Populate counts based on Asia/Jakarta local hour & minute calculation
     guestRecords.forEach((guest) => {
       const dateObj = new Date(guest.waktuMasuk);
-      const hour = dateObj.getHours();
-      const minutes = dateObj.getMinutes();
+      const { hour, minutes } = getJakartaHourAndMinutes(dateObj);
 
       if (hour >= 6 && hour <= 18) {
         let slotKey = "";
